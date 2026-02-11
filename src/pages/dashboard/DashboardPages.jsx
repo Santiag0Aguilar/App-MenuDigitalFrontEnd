@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useUI } from '../../contexts/UIContext';
-import { menuAPI } from '../../services/api';
-import './DashboardPages.css';
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useUI } from "../../contexts/UIContext";
+import { menuAPI } from "../../services/api";
+import "./DashboardPages.css";
+import QRCodeCard from "../../components/dashboard/QRCodeCard";
+import { UIConfigContent } from "../../App";
+import { UICustomization } from "../../components/ui/UICustomization";
 
 // Dashboard Home
 export const DashboardHome = () => {
   const { user } = useAuth();
+  console.log(user);
   const { menuUrl } = useUI();
   const [stats, setStats] = useState({
     totalProducts: 0,
@@ -18,18 +22,28 @@ export const DashboardHome = () => {
     const fetchMenu = async () => {
       try {
         const data = await menuAPI.getMenu();
-        const totalProducts = data.categories?.reduce((sum, cat) => 
-          sum + (cat.products?.length || 0), 0) || 0;
-        const activeProducts = data.categories?.reduce((sum, cat) => 
-          sum + (cat.products?.filter(p => p.isActive && p.price !== null).length || 0), 0) || 0;
-        
+        const totalProducts =
+          data.menu?.reduce(
+            (sum, cat) => sum + (cat.products?.length || 0),
+            0,
+          ) || 0;
+
+        const activeProducts =
+          data.menu?.reduce(
+            (sum, cat) =>
+              sum +
+              (cat.products?.filter((p) => p.isActive && p.price !== null)
+                .length || 0),
+            0,
+          ) || 0;
+
         setStats({
           totalProducts,
           activeProducts,
-          totalCategories: data.categories?.length || 0,
+          totalCategories: data.menu?.length || 0,
         });
       } catch (error) {
-        console.error('Error fetching menu:', error);
+        console.error("Error fetching menu:", error);
       }
     };
 
@@ -39,7 +53,7 @@ export const DashboardHome = () => {
   return (
     <div className="dashboard-page">
       <div className="page-header">
-        <h1>Bienvenido, {user?.businessName}</h1>
+        <h1>Bienvenido, {user?.user.businessName}</h1>
         <p>Gestiona tu menú digital desde aquí</p>
       </div>
 
@@ -72,7 +86,12 @@ export const DashboardHome = () => {
       <div className="quick-actions">
         <h2>Acceso Rápido</h2>
         <div className="action-cards">
-          <a href={menuUrl} target="_blank" rel="noopener noreferrer" className="action-card">
+          <a
+            href={menuUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="action-card"
+          >
             <span className="action-icon">🌐</span>
             <div>
               <h3>Ver mi Menú</h3>
@@ -94,12 +113,17 @@ export const ProductsPage = () => {
     const fetchProducts = async () => {
       try {
         const data = await menuAPI.getMenu();
-        const allProducts = data.categories?.flatMap(cat => 
-          (cat.products || []).map(p => ({ ...p, categoryName: cat.name }))
-        ) || [];
+        const allProducts =
+          data.menu?.flatMap((cat) =>
+            (cat.products || []).map((p) => ({
+              ...p,
+              categoryName: cat.name,
+            })),
+          ) || [];
+
         setProducts(allProducts);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
       setLoading(false);
     };
@@ -108,7 +132,11 @@ export const ProductsPage = () => {
   }, []);
 
   if (loading) {
-    return <div className="loading-screen"><div className="spinner"></div></div>;
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   return (
@@ -120,8 +148,10 @@ export const ProductsPage = () => {
 
       <div className="info-banner">
         <span>ℹ️</span>
-        <p>Los productos se sincronizan automáticamente desde Loyverse. 
-           Solo los productos con precio se mostrarán en el menú público.</p>
+        <p>
+          Los productos se sincronizan automáticamente desde Loyverse. Solo los
+          productos con precio se mostrarán en el menú público.
+        </p>
       </div>
 
       <div className="products-table">
@@ -135,14 +165,22 @@ export const ProductsPage = () => {
             <div className="product-row-info">
               <h3>{product.name}</h3>
               <p className="category-badge">{product.categoryName}</p>
-              {product.description && <p className="product-desc">{product.description}</p>}
+              {product.description && (
+                <p className="product-desc">{product.description}</p>
+              )}
             </div>
             <div className="product-row-meta">
               <div className="product-price">
-                {product.price !== null ? `$${product.price.toLocaleString()}` : 'Sin precio'}
+                {product.price !== null
+                  ? `$${product.price.toLocaleString()}`
+                  : "Sin precio"}
               </div>
-              <div className={`product-status ${product.isActive ? 'active' : 'inactive'}`}>
-                {product.isActive && product.price !== null ? 'Visible' : 'Oculto'}
+              <div
+                className={`product-status ${product.isActive ? "active" : "inactive"}`}
+              >
+                {product.isActive && product.price !== null
+                  ? "Visible"
+                  : "Oculto"}
               </div>
             </div>
           </div>
@@ -161,9 +199,9 @@ export const CategoriesPage = () => {
     const fetchCategories = async () => {
       try {
         const data = await menuAPI.getMenu();
-        setCategories(data.categories || []);
+        setCategories(data.menu || []);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
       setLoading(false);
     };
@@ -172,7 +210,11 @@ export const CategoriesPage = () => {
   }, []);
 
   if (loading) {
-    return <div className="loading-screen"><div className="spinner"></div></div>;
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   return (
@@ -190,15 +232,17 @@ export const CategoriesPage = () => {
       <div className="categories-grid">
         {categories.map((category) => (
           <div key={category.id} className="category-card">
-            <div 
-              className="category-color" 
-              style={{ background: category.color || '#64748b' }}
+            <div
+              className="category-color"
+              style={{ background: category.color || "#64748b" }}
             ></div>
             <div className="category-content">
               <h3>{category.name}</h3>
               <p>{category.products?.length || 0} productos</p>
-              <div className={`category-status ${category.isActive ? 'active' : 'inactive'}`}>
-                {category.isActive ? 'Activa' : 'Inactiva'}
+              <div
+                className={`category-status ${category.isActive ? "active" : "inactive"}`}
+              >
+                {category.isActive ? "Activa" : "Inactiva"}
               </div>
             </div>
           </div>
@@ -221,6 +265,8 @@ export const UIConfigPage = () => {
         <div id="color-picker-section"></div>
         <div id="template-selector-section"></div>
       </div>
+      <UICustomization />
+      <br />
     </div>
   );
 };
@@ -235,6 +281,7 @@ export const QRPage = () => {
       </div>
 
       <div id="qr-code-section"></div>
+      <QRCodeCard />
     </div>
   );
 };

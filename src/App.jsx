@@ -14,34 +14,23 @@ import {
   QRPage,
 } from "./pages/dashboard/DashboardPages";
 import { MenuPage, CheckoutPage } from "./pages/menu/MenuPages";
-import { ColorPicker, TemplateSelector } from "./components/ui/UICustomization";
+import { UICustomization } from "./components/ui/UICustomization";
 import QRCodeCard from "./components/dashboard/QRCodeCard";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
 
 // Portal components for dashboard pages
-const UIConfigContent = () => {
+export const UIConfigContent = () => {
   useEffect(() => {
-    const colorSection = document.getElementById("color-picker-section");
-    const templateSection = document.getElementById(
-      "template-selector-section",
-    );
-
+    const container = document.getElementById("ui-config-section");
     return () => {
-      if (colorSection) colorSection.innerHTML = "";
-      if (templateSection) templateSection.innerHTML = "";
+      if (container) container.innerHTML = "";
     };
   }, []);
 
-  const colorSection = document.getElementById("color-picker-section");
-  const templateSection = document.getElementById("template-selector-section");
+  const container = document.getElementById("ui-config-section");
 
-  return (
-    <>
-      {colorSection && createPortal(<ColorPicker />, colorSection)}
-      {templateSection && createPortal(<TemplateSelector />, templateSection)}
-    </>
-  );
+  return <>{container && createPortal(<UICustomization />, container)}</>;
 };
 
 const QRPageContent = () => {

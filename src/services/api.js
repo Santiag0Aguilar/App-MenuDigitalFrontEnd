@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const API_BASE_URL = "https://app-menudigital.onrender.com";
+const TOKEN_KEY = "accessToken";
 
-// Create axios instance with base configuration
+// Create axios instance
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -11,33 +12,35 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
-// Request interceptor to add auth token
+// Request interceptor → mete JWT si existe
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem(TOKEN_KEY);
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error),
 );
 
-// Response interceptor for error handling
+// Response interceptor → manejo global de sesión
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.warn("401 - sesión inválida");
-      localStorage.removeItem("accessToken");
+      console.warn("401 - sesión inválida o expirada");
+      localStorage.removeItem(TOKEN_KEY);
+      // opcional: window.location.href = "/login";
     }
     return Promise.reject(error);
   },
 );
 
-// Auth API
+// -------- AUTH API --------
+
 export const authAPI = {
   register: async (data) => {
     const response = await apiClient.post("/auth/register", data);
@@ -45,11 +48,11 @@ export const authAPI = {
   },
 
   login: async (credentials) => {
-    console.log(credentials);
-    const response = await apiClient.post(
-      "/auth/login",
-      credentials,
-    ); /* Aqui */
+    const response = await apiClient.post("/auth/login", credentials);
+
+    // guardas token aquí
+    localStorage.setItem(TOKEN_KEY, response.data.token);
+
     return response.data;
   },
 
@@ -59,7 +62,8 @@ export const authAPI = {
   },
 };
 
-// Menu API
+// -------- MENU API --------
+
 export const menuAPI = {
   getMenu: async () => {
     const response = await apiClient.get("/menu/");
@@ -72,11 +76,10 @@ export const menuAPI = {
   },
 };
 
-// Public Menu API (no auth required)
+// -------- PUBLIC API --------
+
 export const publicMenuAPI = {
   getMenuBySlug: async (slug) => {
-    // This would need to be implemented on the backend
-    // For now, we'll use the authenticated endpoint
     const response = await axios.get(`${API_BASE_URL}/menu/public/${slug}`);
     return response.data;
   },
