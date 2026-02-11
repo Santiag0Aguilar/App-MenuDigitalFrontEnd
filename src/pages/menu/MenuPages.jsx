@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import { useCart } from '../../contexts/CartContext';
-import ProductCard from '../../components/menu/ProductCard';
-import CategoryTabs from '../../components/menu/CategoryTabs';
-import CartDrawer from '../../components/menu/CartDrawer';
-import CheckoutForm from '../../components/menu/CheckoutForm';
-import { menuAPI } from '../../services/api';
-import { formatPrice } from '../../utils/helpers';
-import './MenuPages.css';
+import { useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import { useCart } from "../../contexts/CartContext";
+import ProductCard from "../../components/menu/ProductCard";
+import CategoryTabs from "../../components/menu/CategoryTabs";
+import CartDrawer from "../../components/menu/CartDrawer";
+import CheckoutForm from "../../components/menu/CheckoutForm";
+import { publicMenuAPI } from "../../services/api";
+import { formatPrice } from "../../utils/helpers";
+import "./MenuPages.css";
 
 export const MenuPage = () => {
   const { businessSlug } = useParams();
@@ -15,9 +15,10 @@ export const MenuPage = () => {
   const { getItemCount } = useCart();
   const [menuData, setMenuData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
 
+  // Manejo de alerta de pedido enviado
   useEffect(() => {
     if (location.state?.orderSent) {
       setShowOrderSuccess(true);
@@ -26,14 +27,16 @@ export const MenuPage = () => {
     }
   }, [location]);
 
+  // Fetch del menú público por slug
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        // In production, this would be a public endpoint
-        const data = await menuAPI.getMenu();
+        const data = await publicMenuAPI.getMenuBySlug(businessSlug);
+        console.log("MENU DATA", data);
+
         setMenuData(data);
       } catch (error) {
-        console.error('Error loading menu:', error);
+        console.error("Error loading menu:", error);
       }
       setLoading(false);
     };
@@ -59,12 +62,16 @@ export const MenuPage = () => {
     );
   }
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? menuData.categories?.flatMap(cat => cat.products || [])
-    : menuData.categories?.find(cat => cat.id === selectedCategory)?.products || [];
+  // 🔹 Adaptación al endpoint público
+  const categories = Array.isArray(menuData.menu) ? menuData.menu : [];
 
-  const visibleProducts = filteredProducts.filter(p => 
-    p.isActive && p.price !== null
+  const filteredProducts =
+    selectedCategory === "all"
+      ? categories.flatMap((cat) => cat.products || [])
+      : categories.find((cat) => cat.id === selectedCategory)?.products || [];
+
+  const visibleProducts = (filteredProducts || []).filter(
+    (p) => p.isActive && p.price !== null,
   );
 
   return (
@@ -77,9 +84,9 @@ export const MenuPage = () => {
 
       <header className="menu-header">
         <div className="menu-header-content">
-          <h1>{menuData.business?.businessName || 'Nuestro Menú'}</h1>
+          <h1>{menuData.business?.businessName || "Nuestro Menú"}</h1>
           {menuData.business?.phone && (
-            <a 
+            <a
               href={`https://wa.me/${menuData.business.phone}`}
               className="whatsapp-link"
               target="_blank"
@@ -89,7 +96,7 @@ export const MenuPage = () => {
             </a>
           )}
         </div>
-        
+
         <button className="cart-button" onClick={() => {}}>
           🛒 Carrito
           {getItemCount() > 0 && (
@@ -98,8 +105,8 @@ export const MenuPage = () => {
         </button>
       </header>
 
-      <CategoryTabs 
-        categories={menuData.categories || []}
+      <CategoryTabs
+        categories={categories}
         onCategoryChange={setSelectedCategory}
       />
 
@@ -123,6 +130,7 @@ export const MenuPage = () => {
   );
 };
 
+// ✅ CheckoutPage también protegido y usando endpoint público
 export const CheckoutPage = () => {
   const { businessSlug } = useParams();
   const { items, getTotal } = useCart();
@@ -131,10 +139,10 @@ export const CheckoutPage = () => {
   useEffect(() => {
     const fetchBusiness = async () => {
       try {
-        const data = await menuAPI.getMenu();
-        setBusinessData(data.business);
+        const data = await publicMenuAPI.getMenuBySlug(businessSlug);
+        setBusinessData(data.business || null);
       } catch (error) {
-        console.error('Error loading business:', error);
+        console.error("Error loading business:", error);
       }
     };
 
@@ -170,7 +178,7 @@ export const CheckoutPage = () => {
 
         <div className="checkout-grid">
           <div className="checkout-main">
-            <CheckoutForm 
+            <CheckoutForm
               businessPhone={businessData?.phone}
               businessSlug={businessSlug}
             />
@@ -179,7 +187,7 @@ export const CheckoutPage = () => {
           <div className="checkout-sidebar">
             <div className="order-summary">
               <h3>Resumen del Pedido</h3>
-              
+
               <div className="summary-items">
                 {items.map((item) => (
                   <div key={item.id} className="summary-item">

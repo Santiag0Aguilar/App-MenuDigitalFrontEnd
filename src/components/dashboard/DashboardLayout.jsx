@@ -7,13 +7,6 @@ const DashboardLayout = () => {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  if (loading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (!user) {
-    return null; // o redirect
-  }
 
   const handleLogout = () => {
     logout();

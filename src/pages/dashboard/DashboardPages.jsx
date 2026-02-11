@@ -10,14 +10,15 @@ import { UICustomization } from "../../components/ui/UICustomization";
 // Dashboard Home
 export const DashboardHome = () => {
   const { user } = useAuth();
-  console.log(user);
+  console.log(useAuth());
+  console.log("a", user);
   const { menuUrl } = useUI();
+  console.log("b", useUI());
   const [stats, setStats] = useState({
     totalProducts: 0,
     activeProducts: 0,
     totalCategories: 0,
   });
-
   useEffect(() => {
     const fetchMenu = async () => {
       try {

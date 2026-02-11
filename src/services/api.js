@@ -80,7 +80,8 @@ export const menuAPI = {
 
 export const publicMenuAPI = {
   getMenuBySlug: async (slug) => {
-    const response = await axios.get(`${API_BASE_URL}/menu/public/${slug}`);
+    const response = await axios.get(`${API_BASE_URL}/api/public/menu/${slug}`);
+
     return response.data;
   },
 };
