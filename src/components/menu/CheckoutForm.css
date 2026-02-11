@@ -1,0 +1,201 @@
+.checkout-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.form-section h3 {
+  margin: 0 0 1.25rem 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input.input-error,
+.form-group textarea.input-error {
+  border-color: #ef4444;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.error-text {
+  display: block;
+  margin-top: 0.375rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.delivery-options,
+.payment-options {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.delivery-option,
+.payment-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.delivery-option input,
+.payment-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.delivery-option .option-content,
+.payment-option .option-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.delivery-option:hover .option-content,
+.payment-option:hover .option-content {
+  background: #f1f5f9;
+  border-color: var(--primary-light, #60a5fa);
+}
+
+.delivery-option.active .option-content,
+.payment-option.active .option-content {
+  background: rgba(59, 130, 246, 0.05);
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.option-icon {
+  font-size: 2rem;
+}
+
+.option-title {
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.125rem;
+}
+
+.option-desc {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.checkbox-group {
+  margin-top: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.checkbox-label:hover {
+  background: #f8fafc;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color, #3b82f6);
+}
+
+.checkbox-label span {
+  font-size: 0.9375rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 1.125rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .form-section {
+    padding: 1.25rem;
+  }
+  
+  .delivery-options,
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .option-icon {
+    font-size: 1.75rem;
+  }
+}

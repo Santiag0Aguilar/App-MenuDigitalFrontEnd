@@ -1,0 +1,156 @@
+.qr-code-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.qr-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.qr-container {
+  display: inline-block;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.qr-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.qr-url {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  word-break: break-all;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+.qr-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.qr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qr-btn span {
+  font-size: 1.25rem;
+}
+
+.qr-btn-primary {
+  background: linear-gradient(135deg, var(--primary-color, #3b82f6) 0%, var(--primary-dark, #2563eb) 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.qr-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.qr-btn-secondary {
+  background: white;
+  color: var(--primary-color, #3b82f6);
+  border: 2px solid var(--primary-color, #3b82f6);
+}
+
+.qr-btn-secondary:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.qr-btn:active {
+  transform: translateY(0);
+}
+
+.qr-tips {
+  background: #fffbeb;
+  border: 2px solid #fef3c7;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.qr-tips h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.qr-tips ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #78350f;
+}
+
+.qr-tips li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.qr-tips li:last-child {
+  margin-bottom: 0;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .qr-container,
+  .qr-container * {
+    visibility: visible;
+  }
+  
+  .qr-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .qr-section {
+    padding: 1.5rem;
+  }
+  
+  .qr-container {
+    padding: 1rem;
+  }
+  
+  .qr-container svg {
+    width: 240px !important;
+    height: 240px !important;
+  }
+  
+  .qr-actions {
+    grid-template-columns: 1fr;
+  }
+}
