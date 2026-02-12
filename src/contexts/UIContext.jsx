@@ -24,10 +24,8 @@ export const UIProvider = ({ children }) => {
     if (user?.user) {
       const color = user.user.primaryColor || "#3B82F6";
       const template = user.user.templateType || "TEMPLATE_1";
-      const slug = user.user.slug; // 👈 AHORA SÍ
+      const slug = user.user.slug;
       const url = buildMenuUrl(slug);
-
-      console.log("SLUG REAL:", slug); // debug
 
       setPrimaryColor(color);
       setTemplateType(template);

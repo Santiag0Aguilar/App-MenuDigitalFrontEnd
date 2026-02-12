@@ -10,6 +10,7 @@ import { formatPrice } from "../../utils/helpers";
 import "./MenuPages.css";
 import { Link } from "react-router-dom";
 import { trackEvent } from "./../../services/trackerEvents.js";
+import { applyPrimaryColor } from "../../utils/helpers";
 
 export const MenuPage = () => {
   const { businessSlug } = useParams();
@@ -29,6 +30,13 @@ export const MenuPage = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location]);
+
+  /* Applay color */
+  useEffect(() => {
+    if (menuData?.business?.color) {
+      applyPrimaryColor(menuData.business.color);
+    }
+  }, [menuData]);
 
   // Fetch del menú público por slug
   useEffect(() => {

@@ -34,8 +34,6 @@ export const CartProvider = ({ children }) => {
   }, [items]);
 
   const addItem = (product, businessSlug, quantity = 1) => {
-    console.log("producto de contexto", product);
-    console.log("slug de contexto", businessSlug);
     if (window.umami) {
       umami.track("add_to_cart", {
         productId: product.id,

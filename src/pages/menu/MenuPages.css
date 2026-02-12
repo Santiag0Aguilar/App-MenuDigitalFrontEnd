@@ -318,7 +318,7 @@
   .checkout-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .checkout-sidebar {
     position: static;
     order: -1;
@@ -329,29 +329,29 @@
   .menu-header {
     padding: 1rem;
   }
-  
+
   .menu-header h1 {
     font-size: 1.25rem;
   }
-  
+
   .whatsapp-link {
     padding: 0.5rem 0.875rem;
     font-size: 0.8125rem;
   }
-  
+
   .cart-button {
     padding: 0.625rem 1rem;
     font-size: 0.9375rem;
   }
-  
+
   .products-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .checkout-page {
     padding: 1rem;
   }
-  
+
   .checkout-header h1 {
     font-size: 1.5rem;
   }

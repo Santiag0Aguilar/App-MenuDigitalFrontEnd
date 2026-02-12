@@ -127,16 +127,39 @@ export const generateWhatsAppMessage = (order) => {
     deliveryType,
     customerName,
     address,
+    references,
+    receiverName,
+    location,
+    arrivalTime,
     paymentMethod,
     hasChange,
+    cashAmount,
+    notes,
+    tip,
   } = order;
 
   let message = `*Nuevo Pedido - InnBeta*\n\n`;
   message += `*Cliente:* ${customerName}\n`;
-  message += `*Tipo:* ${deliveryType === "delivery" ? "Domicilio" : "Recoger en local"}\n\n`;
 
-  if (deliveryType === "delivery" && address) {
-    message += `*Dirección:* ${address}\n\n`;
+  const typeMap = {
+    delivery: "Domicilio",
+    pickup: "Recoger en local",
+    dinein: "Comer en el lugar",
+  };
+
+  message += `*Tipo de pedido:* ${typeMap[deliveryType]}\n\n`;
+
+  if (deliveryType === "delivery") {
+    message += `*Quién recibe:* ${receiverName}\n`;
+    message += `*Dirección:* ${address}\n`;
+    if (references) message += `*Referencias:* ${references}\n`;
+
+    if (location) {
+      message += `*Ubicación:* https://maps.google.com/?q=${location.latitude},${location.longitude}\n`;
+    }
+    message += `\n`;
+  } else {
+    message += `*Hora de llegada:* ${arrivalTime}\n\n`;
   }
 
   message += `*Productos:*\n`;
@@ -148,11 +171,27 @@ export const generateWhatsAppMessage = (order) => {
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
-  message += `\n*Total:* ${formatPrice(total)}\n\n`;
-  message += `*Método de pago:* ${paymentMethod}\n`;
 
-  if (paymentMethod === "cash" && hasChange) {
-    message += `Cliente trae cambio\n`;
+  message += `\n*Total:* ${formatPrice(total)}\n`;
+
+  if (tip) {
+    message += `*Propina:* ${formatPrice(tip)}\n`;
+  }
+
+  message += `\n*Pago:* ${paymentMethod}\n`;
+
+  if (paymentMethod === "cash") {
+    if (hasChange) {
+      message += `Pago exacto\n`;
+    } else {
+      const change = cashAmount - total;
+      message += `Paga con: ${formatPrice(cashAmount)}\n`;
+      message += `Cambio(Sin contar propia): ${formatPrice(change)}\n`;
+    }
+  }
+
+  if (notes) {
+    message += `\n*Notas:* ${notes}\n`;
   }
 
   return encodeURIComponent(message);

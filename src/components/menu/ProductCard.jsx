@@ -8,7 +8,6 @@ const ProductCard = ({ product, businessSlug }) => {
   const { addItem } = useCart();
 
   const handleAddToCart = () => {
-    console.log(product);
     if (window.umami) {
       umami.track("view_product", {
         productId: product.id,
