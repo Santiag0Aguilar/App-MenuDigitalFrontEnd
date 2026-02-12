@@ -2,17 +2,19 @@
   "name": "innbeta-frontend",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "InnBeta - SaaS Multi-tenant Digital Menu Platform",
   "dependencies": {
+    "axios": "^1.6.2",
+    "framer-motion": "^10.16.16",
+    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "qrcode.react": "^3.1.0",
-    "axios": "^1.6.2",
-    "framer-motion": "^10.16.16"
+    "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
+    "terser": "^5.46.0",
     "vite": "^5.0.8"
   },
   "scripts": {

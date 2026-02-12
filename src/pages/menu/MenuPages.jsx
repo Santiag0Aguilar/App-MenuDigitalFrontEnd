@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, NavLink } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import ProductCard from "../../components/menu/ProductCard";
 import CategoryTabs from "../../components/menu/CategoryTabs";
@@ -8,11 +8,12 @@ import CheckoutForm from "../../components/menu/CheckoutForm";
 import { publicMenuAPI } from "../../services/api";
 import { formatPrice } from "../../utils/helpers";
 import "./MenuPages.css";
+import { Link } from "react-router-dom";
 
 export const MenuPage = () => {
   const { businessSlug } = useParams();
   const location = useLocation();
-  const { getItemCount } = useCart();
+  const { getItemCount, toggleCart } = useCart();
   const [menuData, setMenuData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -32,7 +33,6 @@ export const MenuPage = () => {
     const fetchMenu = async () => {
       try {
         const data = await publicMenuAPI.getMenuBySlug(businessSlug);
-        console.log("MENU DATA", data);
 
         setMenuData(data);
       } catch (error) {
@@ -84,7 +84,7 @@ export const MenuPage = () => {
 
       <header className="menu-header">
         <div className="menu-header-content">
-          <h1>{menuData.business?.businessName || "Nuestro Menú"}</h1>
+          <h1>{menuData.business?.name || "Nuestro Menú"}</h1>
           {menuData.business?.phone && (
             <a
               href={`https://wa.me/${menuData.business.phone}`}
@@ -92,12 +92,12 @@ export const MenuPage = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              💬 Contactar
+              💬Contactar
             </a>
           )}
         </div>
 
-        <button className="cart-button" onClick={() => {}}>
+        <button className="cart-button" onClick={toggleCart}>
           🛒 Carrito
           {getItemCount() > 0 && (
             <span className="cart-badge">{getItemCount()}</span>
@@ -170,9 +170,9 @@ export const CheckoutPage = () => {
     <div className="checkout-page">
       <div className="checkout-container">
         <header className="checkout-header">
-          <a href={`/menu/${businessSlug}`} className="back-link">
+          <Link to={`/menu/${businessSlug}`} className="back-link">
             ← Volver al menú
-          </a>
+          </Link>
           <h1>Finalizar Pedido</h1>
         </header>
 

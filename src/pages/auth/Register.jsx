@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { isValidEmail, isValidPhone } from "../../utils/helpers";
 import "./Auth.css";
+import ThunderSvg from "../../assets/thunder-svgrepo-com.png";
+import RefreshSvg from "../../assets/refresh-cw-alt-svgrepo-com.png";
+import BriefCaseSvg from "../../assets/briefcase-svgrepo-com.png";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -116,21 +119,41 @@ const Register = () => {
 
           <div className="auth-features">
             <div className="feature-item">
-              <div className="feature-icon">⚡</div>
+              <div className="feature-icon">
+                <img
+                  className="feature-icon__image"
+                  src={ThunderSvg}
+                  alt="Thunder Icon"
+                />
+              </div>
               <div className="feature-text">
                 <h3>Configuración Rápida</h3>
                 <p>Solo necesitas tu API key de Loyverse</p>
               </div>
             </div>
             <div className="feature-item">
-              <div className="feature-icon">🔄</div>
+              <div className="feature-icon">
+                {" "}
+                <img
+                  className="feature-icon__image"
+                  src={RefreshSvg}
+                  alt="Refresh Icon"
+                />
+              </div>
               <div className="feature-text">
                 <h3>Sincronización Auto</h3>
                 <p>Tu menú siempre actualizado</p>
               </div>
             </div>
             <div className="feature-item">
-              <div className="feature-icon">💼</div>
+              <div className="feature-icon">
+                {" "}
+                <img
+                  className="feature-icon__image"
+                  src={BriefCaseSvg}
+                  alt="Briefcase Icon"
+                />
+              </div>
               <div className="feature-text">
                 <h3>Panel de Control</h3>
                 <p>Gestiona todo desde un solo lugar</p>

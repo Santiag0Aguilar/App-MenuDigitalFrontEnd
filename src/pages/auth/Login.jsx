@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { isValidEmail } from "../../utils/helpers";
 import "./Auth.css";
+import Phone from "../../assets/cell-phone-svgrepo-com.png";
+import Painter from "../../assets/Painter.svg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -79,21 +81,40 @@ const Login = () => {
 
           <div className="auth-features">
             <div className="feature-item">
-              <div className="feature-icon">📱</div>
+              <div className="feature-icon">
+                <img
+                  className="feature-icon__image"
+                  src={Phone}
+                  alt="Phone Icon"
+                />
+              </div>
               <div className="feature-text">
                 <h3>Menú Digital</h3>
                 <p>Catálogo sincronizado en tiempo real</p>
               </div>
             </div>
             <div className="feature-item">
-              <div className="feature-icon">🎨</div>
+              <div className="feature-icon">
+                {" "}
+                <img
+                  className="feature-icon__image"
+                  src={Painter}
+                  alt="Painter Icon"
+                />
+              </div>
               <div className="feature-text">
                 <h3>Personalización</h3>
                 <p>Colores y templates a tu medida</p>
               </div>
             </div>
             <div className="feature-item">
-              <div className="feature-icon">📲</div>
+              <div className="feature-icon">
+                <img
+                  className="feature-icon__image"
+                  src={Phone}
+                  alt="Phone Icon"
+                />
+              </div>
               <div className="feature-text">
                 <h3>Código QR</h3>
                 <p>Genera tu QR único para las mesas</p>

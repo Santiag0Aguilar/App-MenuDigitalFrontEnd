@@ -167,11 +167,43 @@ export const sendWhatsAppOrder = (phoneNumber, order) => {
 
 // Local storage helpers
 export const storage = {
+  get: (key) => {
+    try {
+      const value = localStorage.getItem(key);
+      if (!value) return null;
+
+      // Intentamos parsear
+      return JSON.parse(value);
+    } catch {
+      // Si falla el parse, devolvemos el string puro (ej: JWT)
+      return localStorage.getItem(key);
+    }
+  },
+
+  set: (key, value) => {
+    try {
+      if (typeof value === "string") {
+        localStorage.setItem(key, value);
+      } else {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  remove: (key) => {
+    localStorage.removeItem(key);
+  },
+};
+
+/* export const storage = {
   get: (key) => localStorage.getItem(key),
   set: (key, value) => localStorage.setItem(key, value),
   remove: (key) => localStorage.removeItem(key),
 };
-
+ */
 /* export const storage = {
   get: (key) => {
     try {

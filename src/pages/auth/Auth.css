@@ -18,7 +18,7 @@
 }
 
 .auth-left::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -128,7 +128,9 @@
   background: white;
   padding: 3rem;
   border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 12px 24px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.02),
+    0 12px 24px rgba(0, 0, 0, 0.06);
   width: 100%;
   max-width: 450px;
 }
@@ -284,7 +286,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive */
@@ -292,29 +296,29 @@
   .auth-container {
     flex-direction: column;
   }
-  
+
   .auth-left {
     padding: 2rem;
     min-height: 300px;
   }
-  
+
   .auth-left-content {
     max-width: 100%;
   }
-  
+
   .auth-hero h2 {
     font-size: 2rem;
   }
-  
+
   .auth-hero p {
     font-size: 1rem;
     margin-bottom: 2rem;
   }
-  
+
   .auth-features {
     display: none;
   }
-  
+
   .auth-card {
     padding: 2rem;
     box-shadow: none;
@@ -325,7 +329,7 @@
   .auth-card {
     padding: 1.5rem;
   }
-  
+
   .auth-header h2 {
     font-size: 1.5rem;
   }
