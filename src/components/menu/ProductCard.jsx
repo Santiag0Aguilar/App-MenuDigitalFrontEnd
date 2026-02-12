@@ -1,12 +1,20 @@
-import { formatPrice } from '../../utils/helpers';
-import { useCart } from '../../contexts/CartContext';
-import './ProductCard.css';
+import { formatPrice } from "../../utils/helpers";
+import { useCart } from "../../contexts/CartContext";
+import "./ProductCard.css";
+import { useEffect } from "react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, businessSlug }) => {
   const { addItem } = useCart();
 
+  useEffect(() => {
+    umami.track("view_product", {
+      productId: product.id,
+      businessSlug,
+    });
+  }, [product.id, businessSlug]);
+
   const handleAddToCart = () => {
-    addItem(product);
+    addItem(product, businessSlug);
   };
 
   if (!product.isActive || product.price === null) {
@@ -20,19 +28,16 @@ const ProductCard = ({ product }) => {
           <img src={product.imageUrl} alt={product.name} />
         </div>
       )}
-      
+
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
         {product.description && (
           <p className="product-description">{product.description}</p>
         )}
-        
+
         <div className="product-footer">
           <span className="product-price">{formatPrice(product.price)}</span>
-          <button 
-            className="add-to-cart-btn" 
-            onClick={handleAddToCart}
-          >
+          <button className="add-to-cart-btn" onClick={handleAddToCart}>
             Agregar
           </button>
         </div>

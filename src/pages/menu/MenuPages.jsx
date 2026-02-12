@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 
 export const MenuPage = () => {
   const { businessSlug } = useParams();
+
   const location = useLocation();
   const { getItemCount, toggleCart } = useCart();
   const [menuData, setMenuData] = useState(null);
@@ -42,6 +43,13 @@ export const MenuPage = () => {
     };
 
     fetchMenu();
+  }, [businessSlug]);
+
+  /* TRACKER */
+  useEffect(() => {
+    umami.track("view_menu", {
+      businessSlug,
+    });
   }, [businessSlug]);
 
   if (loading) {
@@ -119,7 +127,11 @@ export const MenuPage = () => {
             </div>
           ) : (
             visibleProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                businessSlug={businessSlug}
+              />
             ))
           )}
         </div>
@@ -165,6 +177,7 @@ export const CheckoutPage = () => {
       </div>
     );
   }
+  // menú visto
 
   return (
     <div className="checkout-page">

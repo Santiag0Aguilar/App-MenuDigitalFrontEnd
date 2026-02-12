@@ -33,7 +33,16 @@ export const CartProvider = ({ children }) => {
     storage.set("cart", items);
   }, [items]);
 
-  const addItem = (product, quantity = 1) => {
+  const addItem = (product, businessSlug, quantity = 1) => {
+    console.log("producto de contexto", product);
+    console.log("slug de contexto", businessSlug);
+    if (window.umami) {
+      umami.track("add_to_cart", {
+        productId: product.id,
+        price: product.price,
+        businessSlug: businessSlug || null,
+      });
+    }
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
 
@@ -45,7 +54,7 @@ export const CartProvider = ({ children }) => {
         );
       }
 
-      return [...prevItems, { ...product, quantity }];
+      return [...prevItems, { ...product, businessSlug, quantity }];
     });
     setIsOpen(true);
   };

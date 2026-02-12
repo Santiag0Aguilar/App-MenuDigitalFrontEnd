@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../contexts/CartContext';
-import { sendWhatsAppOrder } from '../../utils/helpers';
-import './CheckoutForm.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../contexts/CartContext";
+import { sendWhatsAppOrder } from "../../utils/helpers";
+import "./CheckoutForm.css";
 
 const CheckoutForm = ({ businessPhone, businessSlug }) => {
   const navigate = useNavigate();
   const { items, getTotal, clearCart } = useCart();
   const [formData, setFormData] = useState({
-    customerName: '',
-    deliveryType: 'pickup',
-    address: '',
-    paymentMethod: 'cash',
+    customerName: "",
+    deliveryType: "pickup",
+    address: "",
+    paymentMethod: "cash",
     hasChange: false,
   });
   const [errors, setErrors] = useState({});
@@ -20,20 +20,20 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
-    setErrors((prev) => ({ ...prev, [name]: '' }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validate = () => {
     const newErrors = {};
 
     if (!formData.customerName.trim()) {
-      newErrors.customerName = 'El nombre es requerido';
+      newErrors.customerName = "El nombre es requerido";
     }
 
-    if (formData.deliveryType === 'delivery' && !formData.address.trim()) {
-      newErrors.address = 'La dirección es requerida para domicilio';
+    if (formData.deliveryType === "delivery" && !formData.address.trim()) {
+      newErrors.address = "La dirección es requerida para domicilio";
     }
 
     setErrors(newErrors);
@@ -50,10 +50,17 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
       ...formData,
     };
 
+    if (window.umami) {
+      umami.track("checkout_submit", {
+        businessSlug,
+        total: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+        itemsCount: items.length,
+      });
+    }
     sendWhatsAppOrder(businessPhone, order);
     clearCart();
-    navigate(`/menu/${businessSlug}`, { 
-      state: { orderSent: true } 
+    navigate(`/menu/${businessSlug}`, {
+      state: { orderSent: true },
     });
   };
 
@@ -61,7 +68,7 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
     <form onSubmit={handleSubmit} className="checkout-form">
       <div className="form-section">
         <h3>Información Personal</h3>
-        
+
         <div className="form-group">
           <label htmlFor="customerName">Nombre Completo *</label>
           <input
@@ -71,7 +78,7 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
             value={formData.customerName}
             onChange={handleChange}
             placeholder="Tu nombre"
-            className={errors.customerName ? 'input-error' : ''}
+            className={errors.customerName ? "input-error" : ""}
           />
           {errors.customerName && (
             <span className="error-text">{errors.customerName}</span>
@@ -81,14 +88,16 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
 
       <div className="form-section">
         <h3>Tipo de Entrega</h3>
-        
+
         <div className="delivery-options">
-          <label className={`delivery-option ${formData.deliveryType === 'pickup' ? 'active' : ''}`}>
+          <label
+            className={`delivery-option ${formData.deliveryType === "pickup" ? "active" : ""}`}
+          >
             <input
               type="radio"
               name="deliveryType"
               value="pickup"
-              checked={formData.deliveryType === 'pickup'}
+              checked={formData.deliveryType === "pickup"}
               onChange={handleChange}
             />
             <div className="option-content">
@@ -100,12 +109,14 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
             </div>
           </label>
 
-          <label className={`delivery-option ${formData.deliveryType === 'delivery' ? 'active' : ''}`}>
+          <label
+            className={`delivery-option ${formData.deliveryType === "delivery" ? "active" : ""}`}
+          >
             <input
               type="radio"
               name="deliveryType"
               value="delivery"
-              checked={formData.deliveryType === 'delivery'}
+              checked={formData.deliveryType === "delivery"}
               onChange={handleChange}
             />
             <div className="option-content">
@@ -118,7 +129,7 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
           </label>
         </div>
 
-        {formData.deliveryType === 'delivery' && (
+        {formData.deliveryType === "delivery" && (
           <div className="form-group">
             <label htmlFor="address">Dirección de Entrega *</label>
             <textarea
@@ -128,7 +139,7 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
               onChange={handleChange}
               placeholder="Calle, número, referencias..."
               rows="3"
-              className={errors.address ? 'input-error' : ''}
+              className={errors.address ? "input-error" : ""}
             />
             {errors.address && (
               <span className="error-text">{errors.address}</span>
@@ -139,14 +150,16 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
 
       <div className="form-section">
         <h3>Método de Pago</h3>
-        
+
         <div className="payment-options">
-          <label className={`payment-option ${formData.paymentMethod === 'cash' ? 'active' : ''}`}>
+          <label
+            className={`payment-option ${formData.paymentMethod === "cash" ? "active" : ""}`}
+          >
             <input
               type="radio"
               name="paymentMethod"
               value="cash"
-              checked={formData.paymentMethod === 'cash'}
+              checked={formData.paymentMethod === "cash"}
               onChange={handleChange}
             />
             <div className="option-content">
@@ -155,12 +168,14 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
             </div>
           </label>
 
-          <label className={`payment-option ${formData.paymentMethod === 'card' ? 'active' : ''}`}>
+          <label
+            className={`payment-option ${formData.paymentMethod === "card" ? "active" : ""}`}
+          >
             <input
               type="radio"
               name="paymentMethod"
               value="card"
-              checked={formData.paymentMethod === 'card'}
+              checked={formData.paymentMethod === "card"}
               onChange={handleChange}
             />
             <div className="option-content">
@@ -169,12 +184,14 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
             </div>
           </label>
 
-          <label className={`payment-option ${formData.paymentMethod === 'transfer' ? 'active' : ''}`}>
+          <label
+            className={`payment-option ${formData.paymentMethod === "transfer" ? "active" : ""}`}
+          >
             <input
               type="radio"
               name="paymentMethod"
               value="transfer"
-              checked={formData.paymentMethod === 'transfer'}
+              checked={formData.paymentMethod === "transfer"}
               onChange={handleChange}
             />
             <div className="option-content">
@@ -184,7 +201,7 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
           </label>
         </div>
 
-        {formData.paymentMethod === 'cash' && (
+        {formData.paymentMethod === "cash" && (
           <div className="checkbox-group">
             <label className="checkbox-label">
               <input
