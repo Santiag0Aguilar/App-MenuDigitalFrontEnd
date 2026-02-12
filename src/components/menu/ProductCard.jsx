@@ -2,18 +2,35 @@ import { formatPrice } from "../../utils/helpers";
 import { useCart } from "../../contexts/CartContext";
 import "./ProductCard.css";
 import { useEffect } from "react";
+import { trackEvent } from "./../../services/trackerEvents.js";
 
 const ProductCard = ({ product, businessSlug }) => {
   const { addItem } = useCart();
 
-  useEffect(() => {
-    umami.track("view_product", {
-      productId: product.id,
-      businessSlug,
-    });
-  }, [product.id, businessSlug]);
-
   const handleAddToCart = () => {
+    console.log(product);
+    if (window.umami) {
+      umami.track("view_product", {
+        productId: product.id,
+        businessSlug,
+      });
+
+      umami.track("add_to_cart", {
+        productId: product.id,
+        businessSlug,
+        price: product.price,
+      });
+    }
+    trackEvent("view_product", {
+      menuSlug: businessSlug,
+      productId: product.id,
+    });
+
+    trackEvent("add_to_cart", {
+      menuSlug: businessSlug,
+      productId: product.id,
+      price: product.price,
+    });
     addItem(product, businessSlug);
   };
 

@@ -9,6 +9,7 @@ import { publicMenuAPI } from "../../services/api";
 import { formatPrice } from "../../utils/helpers";
 import "./MenuPages.css";
 import { Link } from "react-router-dom";
+import { trackEvent } from "./../../services/trackerEvents.js";
 
 export const MenuPage = () => {
   const { businessSlug } = useParams();
@@ -49,6 +50,13 @@ export const MenuPage = () => {
   useEffect(() => {
     umami.track("view_menu", {
       businessSlug,
+    });
+  }, [businessSlug]);
+
+  useEffect(() => {
+    trackEvent("view_menu", {
+      businessId: menuData?.business?.id,
+      menuSlug: businessSlug,
     });
   }, [businessSlug]);
 

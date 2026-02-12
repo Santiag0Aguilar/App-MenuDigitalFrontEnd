@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { sendWhatsAppOrder } from "../../utils/helpers";
 import "./CheckoutForm.css";
+import { trackEvent } from "./../../services/trackerEvents";
 
 const CheckoutForm = ({ businessPhone, businessSlug }) => {
   const navigate = useNavigate();
@@ -57,6 +58,10 @@ const CheckoutForm = ({ businessPhone, businessSlug }) => {
         itemsCount: items.length,
       });
     }
+    trackEvent("checkout_submit", {
+      menuSlug: businessSlug,
+      price: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    });
     sendWhatsAppOrder(businessPhone, order);
     clearCart();
     navigate(`/menu/${businessSlug}`, {
