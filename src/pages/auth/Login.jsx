@@ -61,10 +61,6 @@ const Login = () => {
       setErrorMessage(result.error || "Error al iniciar sesión");
     }
   };
-  window.umami.track("view_menu", {
-    menuSlug: "demo",
-    businessId: 1,
-  });
 
   return (
     <div className="auth-container">
