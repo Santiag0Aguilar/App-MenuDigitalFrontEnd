@@ -6,6 +6,7 @@ import "./DashboardPages.css";
 import QRCodeCard from "../../components/dashboard/QRCodeCard";
 import { UIConfigContent } from "../../App";
 import { UICustomization } from "../../components/ui/UICustomization";
+import { useDashboard } from "./../../contexts/DashboardContext.jsx";
 
 // Dashboard Home
 export const DashboardHome = () => {
@@ -107,54 +108,99 @@ export const DashboardHome = () => {
 
 // Products Page
 export const ProductsPage = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { categories, loading, createProduct, deleteProduct } = useDashboard();
+  const { user } = useAuth();
+  const isInternal = user?.user?.source === "INTERNAL";
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await menuAPI.getMenu();
-        const allProducts =
-          data.menu?.flatMap((cat) =>
-            (cat.products || []).map((p) => ({
-              ...p,
-              categoryName: cat.name,
-            })),
-          ) || [];
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    price: "",
+    categoryId: "",
+  });
 
-        setProducts(allProducts);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-      setLoading(false);
-    };
+  const handleCreate = async () => {
+    const { name, price, categoryId } = newProduct;
+    if (!name || !price || !categoryId) return;
 
-    fetchProducts();
-  }, []);
+    await createProduct({
+      name,
+      price: parseFloat(price),
+      categoryId,
+    });
 
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
+    setNewProduct({ name: "", price: "", categoryId: "" });
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("¿Eliminar producto?")) return;
+    await deleteProduct(id);
+  };
+
+  if (loading) return <p>Cargando...</p>;
+
+  // 🔥 Aplanar productos para usar tu layout existente
+  const products = categories.flatMap((cat) =>
+    (cat.products || []).map((p) => ({
+      ...p,
+      categoryName: cat.name,
+    })),
+  );
 
   return (
     <div className="dashboard-page">
       <div className="page-header">
         <h1>Productos</h1>
-        <p>Gestiona tu catálogo de productos</p>
+        <p>Gestiona tu catálogo</p>
       </div>
 
       <div className="info-banner">
         <span>ℹ️</span>
         <p>
-          Los productos se sincronizan automáticamente desde Loyverse. Solo los
-          productos con precio se mostrarán en el menú público.
+          {isInternal
+            ? "Puedes crear y administrar productos."
+            : "Los productos se sincronizan automáticamente."}
         </p>
       </div>
 
+      {/* ✅ FORMULARIO BONITO */}
+      {isInternal && (
+        <div className="form-inline">
+          <input
+            placeholder="Nombre"
+            value={newProduct.name}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, name: e.target.value })
+            }
+          />
+
+          <input
+            placeholder="Precio"
+            type="number"
+            value={newProduct.price}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, price: e.target.value })
+            }
+          />
+
+          <select
+            value={newProduct.categoryId}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, categoryId: e.target.value })
+            }
+          >
+            <option value="">Categoría</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+
+          <button onClick={handleCreate}>Crear</button>
+        </div>
+      )}
+
+      {/* ✅ TU LISTADO ORIGINAL */}
       <div className="products-table">
         {products.map((product) => (
           <div key={product.id} className="product-row">
@@ -190,45 +236,57 @@ export const ProductsPage = () => {
     </div>
   );
 };
-
 // Categories Page
 export const CategoriesPage = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { categories, loading, createCategory, deleteCategory } =
+    useDashboard();
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await menuAPI.getMenu();
-        setCategories(data.menu || []);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-      setLoading(false);
-    };
+  const { user } = useAuth();
+  const isInternal = user?.user?.source === "INTERNAL";
 
-    fetchCategories();
-  }, []);
+  const [newCategory, setNewCategory] = useState("");
 
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
+  const handleCreate = async () => {
+    if (!newCategory) return;
+
+    await createCategory({ name: newCategory });
+    setNewCategory("");
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("¿Eliminar categoría?")) return;
+    await deleteCategory(id);
+  };
+
+  if (loading) return <p>Cargando...</p>;
 
   return (
     <div className="dashboard-page">
       <div className="page-header">
         <h1>Categorías</h1>
-        <p>Organiza tus productos por categorías</p>
+        <p>Gestiona tus categorías</p>
       </div>
 
       <div className="info-banner">
         <span>ℹ️</span>
-        <p>Las categorías se sincronizan automáticamente desde Loyverse.</p>
+        <p>
+          {isInternal
+            ? "Puedes crear y gestionar tus categorías."
+            : "Se sincronizan automáticamente."}
+        </p>
       </div>
+
+      {isInternal && (
+        <div className="form-inline">
+          <input
+            placeholder="Nueva categoría"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+
+          <button onClick={handleCreate}>Crear</button>
+        </div>
+      )}
 
       <div className="categories-grid">
         {categories.map((category) => (
@@ -252,7 +310,6 @@ export const CategoriesPage = () => {
     </div>
   );
 };
-
 // UI Configuration Page
 export const UIConfigPage = () => {
   return (

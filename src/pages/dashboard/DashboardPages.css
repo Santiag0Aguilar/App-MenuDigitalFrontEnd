@@ -40,7 +40,11 @@
 .stat-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(37, 99, 235, 0.1) 100%
+  );
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -104,7 +108,11 @@
 .action-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, var(--primary-color, #3b82f6) 0%, var(--primary-dark, #2563eb) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color, #3b82f6) 0%,
+    var(--primary-dark, #2563eb) 100%
+  );
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -298,24 +306,60 @@
   .page-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .product-row {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .product-row-meta {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .config-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.form-inline {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-inline input,
+.form-inline select {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+}
+
+.form-inline button {
+  background: var(--primary-color, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-inline button:hover {
+  background: var(--primary-dark, #2563eb);
+}
+
+.danger-btn {
+  background: #fee2e2;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
 }

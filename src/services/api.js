@@ -86,4 +86,47 @@ export const publicMenuAPI = {
   },
 };
 
+// -------- DASHBOARD API (INTERNAL CRUD) --------
+
+export const dashboardAPI = {
+  // ===== CATEGORÍAS =====
+
+  createCategory: async (data) => {
+    const res = await apiClient.post("/dashboard/categories", data);
+    return res.data;
+  },
+
+  updateCategory: async (id, data) => {
+    const res = await apiClient.put(`/dashboard/categories/${id}`, data);
+    return res.data;
+  },
+
+  deleteCategory: async (id) => {
+    const res = await apiClient.delete(`/dashboard/categories/${id}`);
+    return res.data;
+  },
+
+  getCategories: async () => {
+    const res = await apiClient.get("/dashboard/categories");
+    return res.data;
+  },
+
+  // ===== PRODUCTOS =====
+
+  createProduct: async (data) => {
+    const res = await apiClient.post("/dashboard/products", data);
+    return res.data;
+  },
+
+  updateProduct: async (id, data) => {
+    const res = await apiClient.put(`/dashboard/products/${id}`, data);
+    return res.data;
+  },
+
+  deleteProduct: async (id) => {
+    const res = await apiClient.delete(`/dashboard/products/${id}`);
+    return res.data;
+  },
+};
+
 export default apiClient;
