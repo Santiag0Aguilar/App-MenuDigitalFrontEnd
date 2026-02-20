@@ -135,7 +135,7 @@ function Hero() {
               </span>
             </div>
             <div className="ml-cta-group">
-              <a href="/menu/prueba" className="ml-btn-outline ml-btn-lg">
+              <a href="/menu/pueba" className="ml-btn-outline ml-btn-lg">
                 Ver cómo funciona
               </a>
               <span className="ml-microcopy">Demo interactiva en 2 min</span>
