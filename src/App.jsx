@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import DashboardLayout from "./components/dashboard/DashboardLayout.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import MenuLanding from "./pages/home/MenuLanding.jsx";
 import {
   DashboardHome,
   ProductsPage,
@@ -55,7 +56,7 @@ function App() {
               {/* Public Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-
+              <Route path="/home" element={<MenuLanding></MenuLanding>} />
               {/* Public Menu Routes */}
               <Route path="/menu/:businessSlug" element={<MenuPage />} />
               <Route

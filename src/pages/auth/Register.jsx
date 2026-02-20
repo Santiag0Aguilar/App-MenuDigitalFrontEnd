@@ -16,11 +16,11 @@ const Register = () => {
     confirmPassword: "",
     businessName: "",
     phone: "",
-    // === NUEVO ===
     loyverseKey: "",
-    primaryColor: "#10B981", // default
-    templateType: "TEMPLATE_1", // default
-    rol: "BUSINESS", // default fijo
+    primaryColor: "#10B981",
+    templateType: "TEMPLATE_1",
+    rol: "BUSINESS",
+    source: "INTERNAL",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ const Register = () => {
       newErrors.confirmPassword = "Las contraseñas no coinciden";
     }
 
-    if (!formData.loyverseKey) {
+    if (formData.source === "LOYVERSE" && !formData.loyverseKey) {
       newErrors.loyverseKey = "La API Key de Loyverse es requerida";
     }
 
@@ -88,7 +88,23 @@ const Register = () => {
     setLoading(true);
     setErrorMessage("");
 
-    const { confirmPassword, ...registerData } = formData;
+    const { confirmPassword, loyverseKey, ...baseData } = formData;
+
+    let registerData;
+
+    if (formData.source === "LOYVERSE") {
+      registerData = {
+        ...baseData,
+        loyverseKey,
+        source: "LOYVERSE",
+      };
+    } else {
+      registerData = {
+        ...baseData,
+        source: "INTERNAL",
+      };
+    }
+
     const result = await register(registerData);
 
     setLoading(false);
@@ -128,7 +144,7 @@ const Register = () => {
               </div>
               <div className="feature-text">
                 <h3>Configuración Rápida</h3>
-                <p>Solo necesitas tu API key de Loyverse</p>
+                <p>Solo necesitas elegir como crear tu menu</p>
               </div>
             </div>
             <div className="feature-item">
@@ -254,22 +270,36 @@ const Register = () => {
                 <span className="error-text">{errors.confirmPassword}</span>
               )}
             </div>
-
             <div className="form-group">
-              <label htmlFor="loyverseKey">Loyverse API Key</label>
-              <input
-                type="text"
-                id="loyverseKey"
-                name="loyverseKey"
-                value={formData.loyverseKey}
+              <label htmlFor="source">¿Cómo quieres crear tu menú?</label>
+              <select
+                id="source"
+                name="source"
+                value={formData.source}
                 onChange={handleChange}
-                placeholder="Tu API Key de Loyverse"
-                className={errors.loyverseKey ? "input-error" : ""}
-              />
-              {errors.loyverseKey && (
-                <span className="error-text">{errors.loyverseKey}</span>
-              )}
+              >
+                <option value="INTERNAL">Crear mi menú aquí</option>
+                <option value="LOYVERSE">Vincular con Loyverse</option>
+              </select>
             </div>
+
+            {formData.source === "LOYVERSE" && (
+              <div className="form-group">
+                <label htmlFor="loyverseKey">Loyverse API Key</label>
+                <input
+                  type="text"
+                  id="loyverseKey"
+                  name="loyverseKey"
+                  value={formData.loyverseKey}
+                  onChange={handleChange}
+                  placeholder="Tu API Key de Loyverse"
+                  className={errors.loyverseKey ? "input-error" : ""}
+                />
+                {errors.loyverseKey && (
+                  <span className="error-text">{errors.loyverseKey}</span>
+                )}
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="templateType">Tipo de Template</label>
               <select
