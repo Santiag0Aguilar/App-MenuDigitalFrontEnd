@@ -1,18 +1,12 @@
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../contexts/CartContext';
-import { formatPrice } from '../../utils/helpers';
-import './CartDrawer.css';
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../contexts/CartContext";
+import { formatPrice } from "../../utils/helpers";
+import "./CartDrawer.css";
 
 const CartDrawer = ({ businessSlug }) => {
   const navigate = useNavigate();
-  const { 
-    items, 
-    isOpen, 
-    closeCart, 
-    updateQuantity, 
-    removeItem, 
-    getTotal 
-  } = useCart();
+  const { items, isOpen, closeCart, updateQuantity, removeItem, getTotal } =
+    useCart();
 
   const handleCheckout = () => {
     closeCart();
@@ -27,7 +21,9 @@ const CartDrawer = ({ businessSlug }) => {
       <div className="cart-drawer">
         <div className="cart-header">
           <h2>Tu Pedido</h2>
-          <button className="cart-close" onClick={closeCart}>✕</button>
+          <button className="cart-close" onClick={closeCart}>
+            Volver al menu
+          </button>
         </div>
 
         <div className="cart-items">
@@ -44,7 +40,7 @@ const CartDrawer = ({ businessSlug }) => {
                     <img src={item.imageUrl} alt={item.name} />
                   </div>
                 )}
-                
+
                 <div className="cart-item-info">
                   <h3>{item.name}</h3>
                   <p className="cart-item-price">{formatPrice(item.price)}</p>
@@ -52,21 +48,21 @@ const CartDrawer = ({ businessSlug }) => {
 
                 <div className="cart-item-actions">
                   <div className="quantity-controls">
-                    <button 
+                    <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       className="quantity-btn"
                     >
                       −
                     </button>
                     <span className="quantity">{item.quantity}</span>
-                    <button 
+                    <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="quantity-btn"
                     >
                       +
                     </button>
                   </div>
-                  <button 
+                  <button
                     onClick={() => removeItem(item.id)}
                     className="remove-btn"
                   >
