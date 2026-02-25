@@ -93,7 +93,7 @@ function Hero() {
             className="ml-badge"
           >
             <span className="ml-badge-dot" />
-            Pedidos por WhatsApp, sin el caos
+            Pedidos claros en WhatsApp. Sin complicarte.
           </motion.div>
 
           <motion.h1
@@ -102,8 +102,8 @@ function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="ml-hero-title"
           >
-            Deja de perder <span className="ml-green">pedidos</span> por
-            mensajes incomprensibles.
+            Tus pedidos llegan{" "}
+            <span className="ml-green"> completos y listos</span> para cobrar.
           </motion.h1>
 
           <motion.p
@@ -112,12 +112,11 @@ function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="ml-hero-sub"
           >
-            Crea tu menú digital en minutos. Tus clientes eligen, arman su
-            carrito y te llega{" "}
+            Tus clientes eligen del menú y te llega{" "}
             <strong className="ml-strong">
-              un solo mensaje claro y completo
+              un solo mensaje ordenado en WhatsApp.
             </strong>{" "}
-            directo a WhatsApp. Sin confusiones. Sin errores. Sin ir y volver.
+            Sin preguntas. Sin confusiones. Sin perder tiempo.
           </motion.p>
 
           <motion.div
@@ -131,7 +130,7 @@ function Hero() {
                 Crea tu menú gratis →
               </a>
               <span className="ml-microcopy">
-                Sin tarjeta · Listo en 5 minutos
+                Gratis · No necesitas saber de tecnología
               </span>
             </div>
             <div className="ml-cta-group">
@@ -256,8 +255,7 @@ function Problem() {
             <span className="ml-green">sin un sistema</span>
           </h2>
           <p className="ml-subtitle ml-subtitle-gray">
-            Esto le pasa a cientos de restaurantes, dark kitchens y negocios
-            locales todos los días.
+            Si vendes por WhatsApp, seguro te ha pasado.
           </p>
         </Reveal>
         <div className="ml-grid-2">
@@ -315,8 +313,8 @@ function Solution() {
             <span className="ml-green">en pedidos perfectos</span>
           </h2>
           <p className="ml-subtitle ml-subtitle-gray">
-            No necesitas apps, ni integraciones, ni saber de tecnología. Solo
-            crear tu menú y compartirlo.
+            No necesitas aprender nada nuevo. Si sabes usar WhatsApp, sabes usar
+            esto.
           </p>
         </Reveal>
         <div className="ml-grid-3">
@@ -344,7 +342,7 @@ const benefits = [
   },
   {
     icon: "⚡",
-    title: "Procesas el doble en el mismo tiempo",
+    title: "Atiendes más pedidos sin volverte loco",
     desc: "Sin ir y volver con mensajes. El pedido llega listo. Tú cocinas, no descifras.",
   },
   {
@@ -354,7 +352,7 @@ const benefits = [
   },
   {
     icon: "💼",
-    title: "Ves profesionalidad sin invertir en apps",
+    title: "Tu negocio se ve más profesional sin pagar nada",
     desc: "Tu menú se ve limpio, moderno y de marca. Sin pagar comisiones ni armar integraciones.",
   },
   {
@@ -573,12 +571,11 @@ function FinalCTA() {
         <Reveal>
           <div className="ml-cta-emoji">📲</div>
           <h2 className="ml-cta-title">
-            Hoy mismo puedes recibir tu primer pedido perfecto
+            Hoy mismo puedes dejar de descifrar mensajes.
           </h2>
           <p className="ml-cta-sub">
-            Crea tu menú gratis ahora. En 5 minutos lo tienes listo para
-            compartir. No necesitas tarjeta, no necesitas técnico, no necesitas
-            excusa.
+            Te toma menos de 5 minutos. Y si quieres, te ayudamos a
+            configurarlo.
           </p>
           <div className="ml-cta-actions">
             <a href="/register" className="ml-btn-white">
