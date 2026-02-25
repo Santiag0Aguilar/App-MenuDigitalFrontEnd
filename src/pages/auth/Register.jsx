@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { isValidEmail, isValidPhone } from "../../utils/helpers";
@@ -22,9 +22,23 @@ const Register = () => {
     rol: "BUSINESS",
     source: "INTERNAL",
   });
+
+  const inputRefs = {
+    businessName: useRef(null),
+    phone: useRef(null),
+    email: useRef(null),
+    password: useRef(null),
+    confirmPassword: useRef(null),
+    loyverseKey: useRef(null),
+    templateType: useRef(null),
+    primaryColor: useRef(null),
+  };
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [step, setStep] = useState(1);
+  const totalSteps = 4;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -115,6 +129,90 @@ const Register = () => {
       setErrorMessage(result.error || "Error al registrarse");
     }
   };
+  const scrollToFirstError = (errorsObj) => {
+    const firstErrorKey = Object.keys(errorsObj)[0];
+    if (!firstErrorKey) return;
+
+    const ref = inputRefs[firstErrorKey];
+
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      ref.current.focus();
+    }
+  };
+
+  const validateStep = () => {
+    const newErrors = {};
+
+    if (step === 1) {
+      if (!formData.businessName) {
+        newErrors.businessName = "El nombre del negocio es requerido";
+      }
+
+      if (!formData.phone) {
+        newErrors.phone = "El teléfono es requerido";
+      } else if (!isValidPhone(formData.phone)) {
+        newErrors.phone = "Teléfono inválido (10 dígitos)";
+      }
+    }
+
+    if (step === 2) {
+      if (!formData.email) {
+        newErrors.email = "El correo es requerido";
+      } else if (!isValidEmail(formData.email)) {
+        newErrors.email = "Correo inválido";
+      }
+
+      if (!formData.password) {
+        newErrors.password = "La contraseña es requerida";
+      } else if (formData.password.length < 6) {
+        newErrors.password = "Mínimo 6 caracteres";
+      }
+
+      if (!formData.confirmPassword) {
+        newErrors.confirmPassword = "Confirma tu contraseña";
+      } else if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = "Las contraseñas no coinciden";
+      }
+    }
+
+    if (step === 3) {
+      if (formData.source === "LOYVERSE" && !formData.loyverseKey) {
+        newErrors.loyverseKey = "La API Key de Loyverse es requerida";
+      }
+    }
+
+    if (step === 4) {
+      if (!formData.templateType) {
+        newErrors.templateType = "Selecciona un template";
+      }
+
+      if (!formData.primaryColor) {
+        newErrors.primaryColor = "El color principal es requerido";
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      scrollToFirstError(newErrors);
+      return false;
+    }
+
+    return true;
+  };
+
+  const nextStep = () => {
+    if (!validateStep()) return;
+    setStep((prev) => Math.min(prev + 1, totalSteps));
+  };
+  const prevStep = () => {
+    setStep((prev) => Math.max(prev - 1, 1));
+  };
 
   return (
     <div className="auth-container">
@@ -191,166 +289,201 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="auth-form">
-            <div className="form-group">
-              <label htmlFor="businessName">Nombre del Negocio</label>
-              <input
-                type="text"
-                id="businessName"
-                name="businessName"
-                value={formData.businessName}
-                onChange={handleChange}
-                placeholder="Mi Restaurante"
-                className={errors.businessName ? "input-error" : ""}
+            {/* Barra de progreso */}
+            <div className="stepper">
+              <div
+                className="stepper-progress"
+                style={{ width: `${(step / totalSteps) * 100}%` }}
               />
-              {errors.businessName && (
-                <span className="error-text">{errors.businessName}</span>
-              )}
             </div>
 
-            <div className="form-group">
-              <label htmlFor="email">Correo electrónico</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="tu@email.com"
-                className={errors.email ? "input-error" : ""}
-              />
-              {errors.email && (
-                <span className="error-text">{errors.email}</span>
-              )}
-            </div>
+            {/* ================= STEP 1 ================= */}
+            {step === 1 && (
+              <div className="step-card">
+                <h3>Información del negocio</h3>
 
-            <div className="form-group">
-              <label htmlFor="phone">Teléfono (WhatsApp)</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="3001234567"
-                className={errors.phone ? "input-error" : ""}
-              />
-              {errors.phone && (
-                <span className="error-text">{errors.phone}</span>
-              )}
-            </div>
+                <div className="form-group">
+                  <label>Nombre del Negocio</label>
+                  <input
+                    ref={inputRefs.businessName}
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleChange}
+                  />
+                  {errors.businessName && (
+                    <span className="error-text">{errors.businessName}</span>
+                  )}
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={errors.password ? "input-error" : ""}
-              />
-              {errors.password && (
-                <span className="error-text">{errors.password}</span>
-              )}
-            </div>
+                <div className="form-group">
+                  <label>Teléfono (WhatsApp)</label>
+                  <input
+                    ref={inputRefs.phone}
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                  {errors.phone && (
+                    <span className="error-text">{errors.phone}</span>
+                  )}
+                </div>
+              </div>
+            )}
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={errors.confirmPassword ? "input-error" : ""}
-              />
-              {errors.confirmPassword && (
-                <span className="error-text">{errors.confirmPassword}</span>
-              )}
-            </div>
-            <div className="form-group">
-              <label htmlFor="source">¿Cómo quieres crear tu menú?</label>
-              <select
-                id="source"
-                name="source"
-                value={formData.source}
-                onChange={handleChange}
-              >
-                <option value="INTERNAL">Crear mi menú aquí</option>
-                <option value="LOYVERSE">Vincular con Loyverse</option>
-              </select>
-            </div>
+            {/* ================= STEP 2 ================= */}
+            {step === 2 && (
+              <div className="step-card">
+                <h3>Datos de acceso</h3>
 
-            {formData.source === "LOYVERSE" && (
-              <div className="form-group">
-                <label htmlFor="loyverseKey">Loyverse API Key</label>
-                <input
-                  type="text"
-                  id="loyverseKey"
-                  name="loyverseKey"
-                  value={formData.loyverseKey}
-                  onChange={handleChange}
-                  placeholder="Tu API Key de Loyverse"
-                  className={errors.loyverseKey ? "input-error" : ""}
-                />
-                {errors.loyverseKey && (
-                  <span className="error-text">{errors.loyverseKey}</span>
+                <div className="form-group">
+                  <label>Correo electrónico</label>
+                  <input
+                    ref={inputRefs.email}
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  {errors.email && (
+                    <span className="error-text">{errors.email}</span>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label>Contraseña</label>
+                  <input
+                    ref={inputRefs.password}
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  {errors.password && (
+                    <span className="error-text">{errors.password}</span>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label>Confirmar contraseña</label>
+                  <input
+                    ref={inputRefs.confirmPassword}
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                  {errors.confirmPassword && (
+                    <span className="error-text">{errors.confirmPassword}</span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ================= STEP 3 ================= */}
+            {step === 3 && (
+              <div className="step-card">
+                <h3>Configuración del menú</h3>
+
+                <div className="form-group">
+                  <label>¿Cómo quieres crear tu menú?</label>
+                  <select
+                    name="source"
+                    value={formData.source}
+                    onChange={handleChange}
+                  >
+                    <option value="INTERNAL">Crear mi menú aquí</option>
+                    <option value="LOYVERSE">Vincular con Loyverse</option>
+                  </select>
+                </div>
+
+                {formData.source === "LOYVERSE" && (
+                  <div className="form-group">
+                    <label>Loyverse API Key</label>
+                    <input
+                      ref={inputRefs.loyverseKey}
+                      type="text"
+                      name="loyverseKey"
+                      value={formData.loyverseKey}
+                      onChange={handleChange}
+                    />
+                    {errors.loyverseKey && (
+                      <span className="error-text">{errors.loyverseKey}</span>
+                    )}
+                  </div>
                 )}
               </div>
             )}
-            <div className="form-group">
-              <label htmlFor="templateType">Tipo de Template</label>
-              <select
-                id="templateType"
-                name="templateType"
-                value={formData.templateType}
-                onChange={handleChange}
-                className={errors.templateType ? "input-error" : ""}
-              >
-                <option value="TEMPLATE_1">Template 1 - Acordeón</option>
-                <option value="TEMPLATE_2">Template 2 - Grid</option>
-              </select>
-              {errors.templateType && (
-                <span className="error-text">{errors.templateType}</span>
-              )}
-            </div>
-            <div className="form-group">
-              <label htmlFor="primaryColor">Color Principal</label>
-              <div
-                style={{ display: "flex", gap: "10px", alignItems: "center" }}
-              >
-                <input
-                  type="text"
-                  id="primaryColor"
-                  name="primaryColor"
-                  value={formData.primaryColor}
-                  onChange={handleChange}
-                  placeholder="#10B981"
-                  className={errors.primaryColor ? "input-error" : ""}
-                />
-                <input
-                  type="color"
-                  value={formData.primaryColor}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      primaryColor: e.target.value,
-                    }))
-                  }
-                  style={{ width: "50px", height: "40px" }}
-                />
-              </div>
-              {errors.primaryColor && (
-                <span className="error-text">{errors.primaryColor}</span>
-              )}
-            </div>
-            <input type="hidden" name="rol" value={formData.rol} />
 
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? "Creando cuenta..." : "Crear Cuenta"}
-            </button>
+            {/* ================= STEP 4 ================= */}
+            {step === 4 && (
+              <div className="step-card">
+                <h3>Personaliza tu menú</h3>
+
+                <div className="form-group">
+                  <label>Tipo de Template</label>
+                  <select
+                    ref={inputRefs.templateType}
+                    name="templateType"
+                    value={formData.templateType}
+                    onChange={handleChange}
+                  >
+                    <option value="TEMPLATE_1">Template 1 - Acordeón</option>
+                    <option value="TEMPLATE_2">Template 2 - Grid</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Color Principal</label>
+                  <input
+                    ref={inputRefs.primaryColor}
+                    type="color"
+                    value={formData.primaryColor}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        primaryColor: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* ================= BOTONES ================= */}
+
+            <div className="step-buttons">
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="btn-secondary"
+                >
+                  Atrás
+                </button>
+              )}
+
+              {step < totalSteps && (
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="btn-primary"
+                >
+                  Siguiente
+                </button>
+              )}
+
+              {step === totalSteps && (
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? "Creando cuenta..." : "Crear Cuenta"}
+                </button>
+              )}
+            </div>
           </form>
 
           <div className="auth-footer">
